@@ -17,12 +17,19 @@ git push -u origin main
 ```
 Settings → Pages → Source : **GitHub Actions**.
 
-## 3. Mise en route d'une école
-1. Sur la page de connexion : **« Nouvel établissement ? Créer un espace »** → nom de l'école, responsable, email, mot de passe. Le créateur devient administrateur.
-2. **🏫 Établissement** : nom, année scolaire, responsable, téléphone, adresse, slogan, logo (repris sur les bulletins).
-3. **🏷️ Classes** : cycle (Maternelle / Primaire / Collège / Lycée), niveau, section, effectif max, titulaire ; les matières standard du cycle peuvent être créées automatiquement (modifiables dans *Matières*).
-4. **👨‍🏫 Enseignants** : compte, discipline, téléphone et affectation aux classes (cases à cocher).
-5. **👥 Élèves**, puis saisie des notes par les enseignants et édition des bulletins.
+## 3. Super administrateur (propriétaire de la plateforme)
+1. Lancez `schema.sql` puis `migration_v3.sql` (si `schema.sql` v2 est déjà exécuté : seulement `migration_v3.sql`).
+2. Authentication → Users → *Add user* (email + mot de passe, *Auto confirm* coché) — utilisez un email dédié.
+3. SQL Editor : `update profiles set role='super', school_id=null where login='VOTRE@EMAIL';`
+4. Connectez-vous : onglet **🏢 Établissements** pour créer une école (nom, responsable, année, email + mot de passe de son administrateur), la suspendre ou la supprimer. Il n'y a **plus d'inscription publique**.
+
+## 4. Mise en route d'une école (par son administrateur)
+1. **🏫 Établissement** : nom, année, responsable + fonction, téléphone, email, adresse, slogan, **logo** et **signature**.
+2. **📚 Matières** : catalogue des matières de l'école (puis coefficients par classe).
+3. **🏷️ Classes** : cycle, niveau, section, effectif max, professeur principal ; matières standard du cycle en option.
+4. **👨‍🏫 Enseignants** : la discipline se choisit parmi les matières enregistrées ; affectation aux classes (seuls les enseignants de la même discipline sont proposés pour une matière).
+5. **👥 Élèves** : nom, matricule, date de naissance, classe, photo.
+6. **📄 Bulletins** : absences, appréciation et conduite par trimestre, puis *Imprimer / Enregistrer en PDF* (un élève ou toute la classe).
 
 ## Droits
 - **Admin** : tout, y compris l'établissement et les comptes.
