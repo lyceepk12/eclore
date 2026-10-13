@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg"><link rel="apple-touch-icon" href="icon.svg">
+<title>Scolaria – Notes & Bulletins</title>
+<style>
+:root{--p:#0f766e;--a:#f59e0b;--bg:#f4f7f6;--c:#fff;--t:#16302d;--m:#64807c;--b:#d9e4e2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a19;--c:#162826;--t:#e4f0ee;--m:#8fb0ab;--b:#27403d}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--t)}
+header{background:var(--p);color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+header b{font-size:18px}header small{opacity:.85}
+nav{display:flex;gap:4px;overflow-x:auto;padding:8px 10px;background:var(--c);border-bottom:1px solid var(--b)}
+nav button{white-space:nowrap;border:0;background:none;color:var(--m);padding:8px 12px;border-radius:8px;font:inherit;cursor:pointer}
+nav button.on{background:var(--p);color:#fff}
+main{max-width:980px;margin:0 auto;padding:14px}
+.card{background:var(--c);border:1px solid var(--b);border-radius:12px;padding:14px;margin-bottom:14px}
+h2{margin:0 0 10px;font-size:18px}
+input,select,textarea{font:inherit;padding:8px;border:1px solid var(--b);border-radius:8px;background:var(--bg);color:var(--t);max-width:100%}
+button.b{background:var(--p);color:#fff;border:0;padding:8px 14px;border-radius:8px;font:inherit;cursor:pointer}
+button.d{background:none;border:0;color:#c0392b;cursor:pointer}
+button.a{background:var(--a);color:#222}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.sc{overflow-x:auto}table{width:100%;border-collapse:collapse}
+th,td{padding:7px 8px;border-bottom:1px solid var(--b);text-align:left}th{color:var(--m);font-size:12px;text-transform:uppercase}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.kpi div{background:var(--bg);border-radius:10px;padding:12px}.kpi b{font-size:26px;color:var(--p);display:block}
+.login{max-width:360px;margin:8vh auto;text-align:center}.login input{width:100%;margin:5px 0}
+.tag{background:var(--a);color:#222;border-radius:6px;padding:1px 7px;font-size:12px}
+.num{width:70px}.bul h1{margin:0;color:var(--p);font-size:20px}.bul .hd{display:flex;justify-content:space-between;border-bottom:3px solid var(--p);padding-bottom:8px;margin-bottom:10px}
+.red{color:#c0392b}
+@media print{header,nav,.noprint{display:none!important}body{background:#fff;color:#000}.card{border:0}}
+</style></head><body>
+<div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+// ⚠️ À remplacer par les valeurs de Supabase > Project Settings > API
+const SUPABASE_URL='https://jaxdntvqbzgtkenabvce.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpheGRudHZxYnpndGtlbmFidmNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4OTk3MDQsImV4cCI6MjEwNzQ3NTcwNH0.dXPWC6kqCdzzf_HuJdCzQmuNMZZMUpP6aEYGRJzr0Jw';
+const $=i=>document.getElementById(i),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])),uid=()=>Math.random().toString(36).slice(2,9);
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let db={users:[],classes:[],students:[],subjects:[],grades:[]};
+const ROLES={admin:'Administrateur',direction:'Administration',prof:'Enseignant'};
+const TABS={admin:['home','eleves','matieres','notes','bulletins','users'],direction:['home','eleves','matieres','notes','bulletins'],prof:['notes']};
+const LBL={home:'🏠 Accueil',eleves:'👥 Élèves',matieres:'📚 Matières',notes:'✏️ Saisie',bulletins:'📄 Bulletins',users:'🔑 Comptes'};
+let S={u:null,tab:'home',as:'',tri:'1',title:'',cls:'',stu:''};
+const nm=(l,id)=>(db[l].find(x=>x.id==id)||{}).name||'?';
+const myAs=()=>db.subjects.filter(s=>S.u.role!='prof'||s.teacher==S.u.id);
+const mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+const f=n=>n==null?'–':n.toFixed(2).replace('.',',');
+const avgSub=(st,sb,tri)=>mean(db.grades.filter(g=>g.stu==st&&g.sub==sb&&(tri==0||g.tri==tri)).map(g=>g.v));
+function gen(st,cls,tri){let n=0,d=0;db.subjects.filter(s=>s.cls==cls).forEach(s=>{const a=avgSub(st,s.id,tri);if(a!=null){n+=a*s.coef;d+=+s.coef}});return d?n/d:null}
+const rank=(st,cls,tri)=>{const l=db.students.filter(x=>x.cls==cls).map(x=>gen(x.id,cls,tri)).filter(x=>x!=null).sort((a,b)=>b-a),m=gen(st,cls,tri);return m==null?null:l.indexOf(m)+1+'/'+l.length};
+const appr=m=>m==null?'':m>=16?'Excellent travail, félicitations.':m>=14?'Très bons résultats, continuez ainsi.':m>=12?'Bon travail, ensemble satisfaisant.':m>=10?'Résultats satisfaisants, des efforts à poursuivre.':m>=8?'Résultats fragiles, un travail plus régulier est attendu.':'Résultats insuffisants, un net ressaisissement est nécessaire.';
+const opt=(l,sel,fn)=>l.map(x=>`<option value="${x.id}" ${x.id==sel?'selected':''}>${esc(fn?fn(x):x.name)}</option>`).join('');
+
+function render(){
+ if(!S.u){$('app').innerHTML=`<div class="card login"><div style="font-size:44px">🎓</div><h2>Scolaria</h2><p style="color:var(--m)">Notes, carnets & bulletins</p><input id="lg" type="email" placeholder="Email" autocapitalize="none"><input id="pw" type="password" placeholder="Mot de passe"><button class="b" style="width:100%" onclick="login()">Se connecter</button><p id="er" class="red"></p></div>`;return}
+ const tabs=TABS[S.u.role];if(!tabs.includes(S.tab))S.tab=tabs[0];
+ $('app').innerHTML=`<header><div><b>🎓 Scolaria</b><br><small>${esc(S.u.name)} · ${ROLES[S.u.role]}</small></div><button class="b a" onclick="logout()">Quitter</button></header>
+ <nav>${tabs.map(t=>`<button class="${t==S.tab?'on':''}" onclick="S.tab='${t}';render()">${LBL[t]}</button>`).join('')}</nav><main>${V[S.tab]()}</main>`}
+
+const V={
+home(){const n=db.grades.length;return `<div class="card"><h2>Tableau de bord</h2><div class="kpi"><div><b>${db.students.length}</b>Élèves</div><div><b>${db.classes.length}</b>Classes</div><div><b>${db.subjects.length}</b>Affectations</div><div><b>${n}</b>Notes saisies</div></div></div>
+ <div class="card"><h2>Moyennes par classe (année)</h2><table><tr><th>Classe</th><th>Effectif</th><th>Moyenne</th></tr>${db.classes.map(c=>{const st=db.students.filter(s=>s.cls==c.id);return `<tr><td>${esc(c.name)}</td><td>${st.length}</td><td><b>${f(mean(st.map(s=>gen(s.id,c.id,0)).filter(x=>x!=null)))}</b></td></tr>`}).join('')}</table></div>`},
+eleves(){return `<div class="card"><h2>Classes</h2><div class="row"><input id="nc" placeholder="Nouvelle classe"><button class="b" onclick="add('classes',{name:\$('nc').value})">Ajouter</button></div>${db.classes.map(c=>`<span class="tag">${esc(c.name)} <button class="d" onclick="del('classes','${c.id}')">×</button></span> `).join('')}</div>
+ <div class="card"><h2>Élèves</h2><div class="row"><input id="ne" placeholder="Nom complet"><select id="nk">${opt(db.classes)}</select><button class="b" onclick="add('students',{name:\$('ne').value,cls:\$('nk').value})">Ajouter</button></div><div class="sc"><table><tr><th>Nom</th><th>Classe</th><th></th></tr>${db.students.map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(nm('classes',s.cls))}</td><td><button class="d" onclick="del('students','${s.id}')">Suppr.</button></td></tr>`).join('')}</table></div></div>`},
+matieres(){const T=db.users.filter(u=>u.role=='prof');return `<div class="card"><h2>Matières & affectations</h2><div class="row"><input id="mn" placeholder="Matière"><input id="mc" class="num" type="number" value="1" min="1" title="Coefficient"><select id="mk">${opt(db.classes)}</select><select id="mt">${opt(T)}</select><button class="b" onclick="add('subjects',{name:\$('mn').value,coef:+\$('mc').value||1,cls:\$('mk').value,teacher:\$('mt').value})">Ajouter</button></div><div class="sc"><table><tr><th>Matière</th><th>Coef</th><th>Classe</th><th>Enseignant</th><th></th></tr>${db.subjects.map(s=>`<tr><td>${esc(s.name)}</td><td>${s.coef}</td><td>${esc(nm('classes',s.cls))}</td><td>${esc(nm('users',s.teacher))}</td><td><button class="d" onclick="del('subjects','${s.id}')">Suppr.</button></td></tr>`).join('')}</table></div></div>`},
+notes(){const A=myAs();if(!A.length)return '<div class="card">Aucune matière ne vous est affectée.</div>';if(!A.find(a=>a.id==S.as))S.as=A[0].id;const a=A.find(x=>x.id==S.as),st=db.students.filter(s=>s.cls==a.cls);
+ const titles=[...new Set(db.grades.filter(g=>g.sub==a.id&&g.tri==S.tri).map(g=>g.t))];
+ return `<div class="card"><h2>Saisie des notes</h2><div class="row"><select onchange="S.as=this.value;render()">${opt(A,S.as,x=>x.name+' – '+nm('classes',x.cls))}</select><select onchange="S.tri=this.value;render()">${[1,2,3].map(t=>`<option value="${t}" ${t==S.tri?'selected':''}>Trimestre ${t}</option>`).join('')}</select><input id="tt" list="tl" placeholder="Intitulé (ex : DS 1)" value="${esc(S.title)}" onchange="S.title=this.value;render()"><datalist id="tl">${titles.map(t=>`<option value="${esc(t)}">`).join('')}</datalist></div>
+ ${S.title?`<div class="sc"><table><tr><th>Élève</th><th>Note /20</th></tr>${st.map(s=>{const g=db.grades.find(g=>g.sub==a.id&&g.stu==s.id&&g.tri==S.tri&&g.t==S.title);return `<tr><td>${esc(s.name)}</td><td><input class="num" type="number" min="0" max="20" step="0.25" data-s="${s.id}" value="${g?g.v:''}"></td></tr>`}).join('')}</table></div><p><button class="b" onclick="saveGr()">Enregistrer</button></p>`:'<p style="color:var(--m)">Saisissez un intitulé de devoir pour afficher la liste.</p>'}</div>
+ <div class="card"><h2>Moyennes T${S.tri}</h2><table><tr><th>Élève</th><th>Moyenne</th></tr>${st.map(s=>`<tr><td>${esc(s.name)}</td><td>${f(avgSub(s.id,a.id,S.tri))}</td></tr>`).join('')}</table></div>`},
+bulletins(){if(!db.classes.find(c=>c.id==S.cls))S.cls=(db.classes[0]||{}).id;const st=db.students.filter(s=>s.cls==S.cls);if(!st.find(s=>s.id==S.stu))S.stu=(st[0]||{}).id;const s=st.find(x=>x.id==S.stu),T=S.tri;
+ let h=`<div class="card noprint"><h2>Bulletins scolaires</h2><div class="row"><select onchange="S.cls=this.value;render()">${opt(db.classes,S.cls)}</select><select onchange="S.stu=this.value;render()">${opt(st,S.stu)}</select><select onchange="S.tri=this.value;render()">${[1,2,3,0].map(t=>`<option value="${t}" ${t==T?'selected':''}>${t?'Trimestre '+t:'Annuel'}</option>`).join('')}</select><button class="b a" onclick="window.print()">🖨️ Imprimer / PDF</button></div></div>`;
+ if(!s)return h;const m=gen(s.id,S.cls,T);
+ return h+`<div class="card bul"><div class="hd"><div><h1>🎓 Scolaria – Bulletin ${T?'du trimestre '+T:'annuel'}</h1><small>Année scolaire ${new Date().getFullYear()-1}/${new Date().getFullYear()}</small></div><div style="text-align:right"><b>${esc(s.name)}</b><br>${esc(nm('classes',S.cls))}</div></div>
+ <div class="sc"><table><tr><th>Matière</th><th>Coef</th><th>Élève</th><th>Classe</th><th>Enseignant</th></tr>${db.subjects.filter(x=>x.cls==S.cls).map(x=>{const cm=mean(st.map(y=>avgSub(y.id,x.id,T)).filter(v=>v!=null));return `<tr><td>${esc(x.name)}</td><td>${x.coef}</td><td><b class="${avgSub(s.id,x.id,T)<10&&avgSub(s.id,x.id,T)!=null?'red':''}">${f(avgSub(s.id,x.id,T))}</b></td><td>${f(cm)}</td><td>${esc(nm('users',x.teacher))}</td></tr>`}).join('')}</table></div>
+ <p style="font-size:18px">Moyenne générale : <b>${f(m)}/20</b> · Rang : <b>${rank(s.id,S.cls,T)||'–'}</b></p><p><b>Appréciation :</b> ${appr(m)}</p><p style="margin-top:40px;display:flex;justify-content:space-between"><span>Le professeur principal</span><span>La Direction</span></p></div>`}
+,
+users(){return `<div class="card"><h2>Comptes utilisateurs</h2><div class="row"><input id="un" placeholder="Nom"><input id="ul" type="email" placeholder="Email" autocapitalize="none"><input id="up" type="password" placeholder="Mot de passe (6+)"><select id="ur">${Object.entries(ROLES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select><button class="b" onclick="addUser()">Créer</button></div><div class="sc"><table><tr><th>Nom</th><th>Email</th><th>Rôle</th><th></th></tr>${db.users.map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(u.login)}</td><td><select onchange="setRole('${u.id}',this.value)" ${u.id==S.u.id?'disabled':''}>${Object.entries({...ROLES,pending:'En attente'}).map(([k,v])=>`<option value="${k}" ${k==u.role?'selected':''}>${v}</option>`).join('')}</select></td><td>${u.id==S.u.id?'':`<button class="d" onclick="del('profiles','${u.id}')">Retirer</button>`}</td></tr>`).join('')}</table></div></div>`}
+};
+const err=e=>{if(e){alert(e.message||e);return true}};
+async function fetchAll(t){let a=[],i=0;for(;;){const{data,error}=await sb.from(t).select('*').range(i,i+999);if(error)throw error;a=a.concat(data);if(data.length<1000)return a;i+=1000}}
+async function loadAll(){const[u,c,s,m,g]=await Promise.all(['profiles','classes','students','subjects','grades'].map(fetchAll));db={users:u,classes:c,students:s,subjects:m,grades:g}}
+async function login(){const{error}=await sb.auth.signInWithPassword({email:$('lg').value.trim(),password:$('pw').value});if(error)return $('er').textContent='Identifiants incorrects';enter()}
+async function enter(){const{data:{user}}=await sb.auth.getUser();const{data:p}=user?await sb.from('profiles').select('*').eq('id',user.id).maybeSingle():{};
+ if(!p||!TABS[p.role]){await sb.auth.signOut();S.u=null;render();const e=$('er');if(e)e.textContent="Compte non activé : contactez l'administrateur.";return}
+ S.u=p;try{await loadAll()}catch(e){err(e)}S.tab=TABS[p.role][0];render()}
+async function logout(){await sb.auth.signOut();S.u=null;render()}
+async function add(l,o){if(!o.name)return;const{data,error}=await sb.from(l).insert(o).select().single();if(err(error))return;db[l].push(data);render()}
+async function del(l,id){if(!confirm('Supprimer ?'))return;if(err((await sb.from(l).delete().eq('id',id)).error))return;await loadAll();render()}
+async function setRole(id,role){if(err((await sb.from('profiles').update({role}).eq('id',id)).error))return;await loadAll();render()}
+async function addUser(){const email=$('ul').value.trim(),password=$('up').value,name=$('un').value.trim()||email;if(!email||password.length<6)return alert('Email et mot de passe (6 caractères min.) requis');
+ const tmp=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+ const{data,error}=await tmp.auth.signUp({email,password,options:{data:{name}}});if(err(error))return;
+ await new Promise(r=>setTimeout(r,500));if(err((await sb.from('profiles').update({role:$('ur').value,name}).eq('id',data.user.id)).error))return;await loadAll();render()}
+async function saveGr(){const rows=[],gone=[];document.querySelectorAll('input[data-s]').forEach(i=>{const k={sub:S.as,stu:i.dataset.s,tri:+S.tri,t:S.title};i.value===''?gone.push(k):rows.push({...k,v:Math.min(20,Math.max(0,+i.value))})});
+ if(rows.length&&err((await sb.from('grades').upsert(rows,{onConflict:'sub,stu,tri,t'})).error))return;
+ for(const k of gone)await sb.from('grades').delete().match(k);
+ db.grades=await fetchAll('grades');alert('Notes enregistrées ✔');render()}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+(async()=>{const{data:{session}}=await sb.auth.getSession();session?enter():render()})();
+</script></body></html>
