@@ -18,7 +18,7 @@ git push -u origin main
 Settings → Pages → Source : **GitHub Actions**.
 
 ## 3. Super administrateur (propriétaire de la plateforme)
-1. Lancez dans l'ordre : `schema.sql`, `migration_v3.sql`, `migration_v4.sql` (n'exécutez que ceux qui manquent si votre projet existe déjà).
+1. Lancez dans l'ordre : `schema.sql`, `migration_v3.sql`, `migration_v4.sql`, `migration_v5.sql` (n'exécutez que ceux qui manquent si votre projet existe déjà).
 2. Authentication → Users → *Add user* (email + mot de passe, *Auto confirm* coché) — utilisez un email dédié.
 3. SQL Editor : `update profiles set role='super', school_id=null where login='VOTRE@EMAIL';`
 4. Connectez-vous : onglet **🏢 Établissements** pour créer une école (nom, responsable, année, email + mot de passe de son administrateur), la suspendre ou la supprimer. Il n'y a **plus d'inscription publique**.
@@ -36,6 +36,10 @@ Settings → Pages → Source : **GitHub Actions**.
 - Groupes **Filles / Garçons** par matière (EPS : un enseignant par groupe). Renseignez le **sexe** des élèves.
 - Super admin : bouton **Ouvrir** sur chaque école (mode support, accès complet), **Suspendre / Réactiver**, **échéance d'abonnement** (blocage automatique), réinitialisation du mot de passe.
 - Import Excel des élèves et des enseignants (bouton « Modèle » pour le format).
+
+## Nouveautés v5
+- **📅 Trimestres** : date de clôture et verrouillage par trimestre ; prolongations (tous les enseignants ou un seul). L'administration peut toujours saisir. La règle est appliquée par la base (impossible de la contourner).
+- **🗓 Années** : bascule d'année (ex. 2026-2027 → 2027-2028). L'ancienne année est archivée en lecture seule (consultation des élèves et des bulletins) ; la nouvelle reprend les classes au niveau supérieur, leurs matières/enseignants et les élèves (les élèves de Tle sortent). Les redoublants se déplacent depuis la fiche élève.
 
 ## Droits
 - **Admin** : tout, y compris l'établissement et les comptes.
