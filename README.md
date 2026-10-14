@@ -6,7 +6,7 @@ Chaque école dispose de son **espace isolé** : toutes les données portent un 
 1. Créez un projet sur supabase.com.
 2. **SQL Editor** : collez `supabase/schema.sql` → *Run*. (Si vous aviez déjà lancé l'ancienne version : lancez d'abord `supabase/reset_v1.sql`, qui efface les données.)
 3. **Authentication → Providers → Email** : désactivez *Confirm email*.
-4. **Project Settings → API** : copiez *Project URL* et la clé *anon public* dans `index.html` (`SUPABASE_URL`, `SUPABASE_KEY`). Jamais la clé `service_role`.
+4. Les clés du projet sont déjà intégrées dans `index.html` (`SUPABASE_URL`, `SUPABASE_KEY` anon). Jamais la clé `service_role`.
 
 ## 2. GitHub
 ```bash
@@ -18,7 +18,7 @@ git push -u origin main
 Settings → Pages → Source : **GitHub Actions**.
 
 ## 3. Super administrateur (propriétaire de la plateforme)
-1. Lancez `schema.sql` puis `migration_v3.sql` (si `schema.sql` v2 est déjà exécuté : seulement `migration_v3.sql`).
+1. Lancez dans l'ordre : `schema.sql`, `migration_v3.sql`, `migration_v4.sql` (n'exécutez que ceux qui manquent si votre projet existe déjà).
 2. Authentication → Users → *Add user* (email + mot de passe, *Auto confirm* coché) — utilisez un email dédié.
 3. SQL Editor : `update profiles set role='super', school_id=null where login='VOTRE@EMAIL';`
 4. Connectez-vous : onglet **🏢 Établissements** pour créer une école (nom, responsable, année, email + mot de passe de son administrateur), la suspendre ou la supprimer. Il n'y a **plus d'inscription publique**.
@@ -30,6 +30,12 @@ Settings → Pages → Source : **GitHub Actions**.
 4. **👨‍🏫 Enseignants** : la discipline se choisit parmi les matières enregistrées ; affectation aux classes (seuls les enseignants de la même discipline sont proposés pour une matière).
 5. **👥 Élèves** : nom, matricule, date de naissance, classe, photo.
 6. **📄 Bulletins** : absences, appréciation et conduite par trimestre, puis *Imprimer / Enregistrer en PDF* (un élève ou toute la classe).
+
+## Nouveautés v4
+- Enseignants modifiables (nom, téléphone, disciplines, mot de passe) ; un enseignant peut avoir plusieurs disciplines et être affecté à plusieurs classes/matières.
+- Groupes **Filles / Garçons** par matière (EPS : un enseignant par groupe). Renseignez le **sexe** des élèves.
+- Super admin : bouton **Ouvrir** sur chaque école (mode support, accès complet), **Suspendre / Réactiver**, **échéance d'abonnement** (blocage automatique), réinitialisation du mot de passe.
+- Import Excel des élèves et des enseignants (bouton « Modèle » pour le format).
 
 ## Droits
 - **Admin** : tout, y compris l'établissement et les comptes.
