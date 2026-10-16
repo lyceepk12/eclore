@@ -1,4 +1,4 @@
-# 🎓 Scolaria – Notes & bulletins multi-établissements (PWA + Supabase)
+# 🎓 Éclore – Notes & bulletins multi-établissements (PWA + Supabase)
 
 Chaque école dispose de son **espace isolé** : toutes les données portent un `school_id` et sont protégées par des règles RLS.
 
@@ -10,7 +10,7 @@ Chaque école dispose de son **espace isolé** : toutes les données portent un 
 
 ## 2. GitHub
 ```bash
-git init && git add . && git commit -m "Scolaria v2"
+git init && git add . && git commit -m "Éclore v2"
 git branch -M main
 git remote add origin https://github.com/VOTRE-COMPTE/scolaria.git
 git push -u origin main
@@ -18,7 +18,7 @@ git push -u origin main
 Settings → Pages → Source : **GitHub Actions**.
 
 ## 3. Super administrateur (propriétaire de la plateforme)
-1. Lancez dans l'ordre : `schema.sql`, `migration_v3.sql`, `migration_v4.sql`, `migration_v5.sql`, `migration_v6.sql`, `migration_v7.sql`, `migration_v8.sql` (n'exécutez que ceux qui manquent si votre projet existe déjà).
+1. Lancez dans l'ordre : `schema.sql`, `migration_v3.sql`, `migration_v4.sql`, `migration_v5.sql`, `migration_v6.sql`, `migration_v7.sql`, `migration_v8.sql`, `migration_v9.sql` (n'exécutez que ceux qui manquent si votre projet existe déjà).
 2. Authentication → Users → *Add user* (email + mot de passe, *Auto confirm* coché) — utilisez un email dédié.
 3. SQL Editor : `update profiles set role='super', school_id=null where login='VOTRE@EMAIL';`
 4. Connectez-vous : onglet **🏢 Établissements** pour créer une école (nom, responsable, année, email + mot de passe de son administrateur), la suspendre ou la supprimer. Il n'y a **plus d'inscription publique**.
@@ -57,6 +57,12 @@ Settings → Pages → Source : **GitHub Actions**.
 - **📘 Livret scolaire (terminale)** : couverture, récapitulatif de l'année (T1, T2, T3, année : rang, moyennes, répartition <8 / 8-12 / ≥12, absences) et avis du jury. Le logo du ministère est fixe (`assets.js`), le logo de l'école est celui de l'établissement connecté.
 - Nouveaux champs : lieu de naissance, nationalité (élèves), série (classes), ville, boîte postale, nom en arabe (établissement).
 - La moyenne annuelle d'une matière est maintenant la moyenne de ses moyennes trimestrielles.
+
+## Nouveautés v9 — Éclore
+- **Nouveau nom : Éclore** — slogan « Faire éclore chaque talent ». ÉCLORE = Élèves · Classes · Livrets · Organisation · Résultats · Enseignants.
+- Nouvelle charte (bleu nuit & or, fond ivoire), menu latéral par **rubriques avec sous-onglets** : Élèves, Vie scolaire, Notes & résultats, Enseignants, Organisation, Configuration.
+- Tableau de bord avec indicateurs et raccourcis, notifications non bloquantes, indicateur de chargement.
+- **Convocations de parents** (suivi du statut + lettre imprimable).
 
 ## Droits
 - **Admin** : tout, y compris l'établissement et les comptes.
