@@ -18,7 +18,7 @@ git push -u origin main
 Settings → Pages → Source : **GitHub Actions**.
 
 ## 3. Super administrateur (propriétaire de la plateforme)
-1. Lancez dans l'ordre : `schema.sql`, `migration_v3.sql`, `migration_v4.sql`, `migration_v5.sql`, `migration_v6.sql`, `migration_v7.sql` (n'exécutez que ceux qui manquent si votre projet existe déjà).
+1. Lancez dans l'ordre : `schema.sql`, `migration_v3.sql`, `migration_v4.sql`, `migration_v5.sql`, `migration_v6.sql`, `migration_v7.sql`, `migration_v8.sql` (n'exécutez que ceux qui manquent si votre projet existe déjà).
 2. Authentication → Users → *Add user* (email + mot de passe, *Auto confirm* coché) — utilisez un email dédié.
 3. SQL Editor : `update profiles set role='super', school_id=null where login='VOTRE@EMAIL';`
 4. Connectez-vous : onglet **🏢 Établissements** pour créer une école (nom, responsable, année, email + mot de passe de son administrateur), la suspendre ou la supprimer. Il n'y a **plus d'inscription publique**.
@@ -51,6 +51,12 @@ Settings → Pages → Source : **GitHub Actions**.
 - **Autorisations à 3 niveaux** par rôle et par rubrique : Aucun / Lecture seule / Modification (appliqué par l'application et par la base).
 - **🖼 Trombinoscope** par classe (impression A4, import de photos en lot : nom du fichier = matricule).
 - **🪪 Cartes scolaires** : 8 cartes par page A4 (90 × 55 mm), recto/verso, verso personnalisable (texte, couleur, image), une classe entière ou un seul élève.
+
+## Nouveautés v8
+- **📜 Certificats de scolarité** (en-tête MENFOP/République de Djibouti avec logo, email et téléphone de l'école ; signature, nom et fonction du responsable).
+- **📘 Livret scolaire (terminale)** : couverture, récapitulatif de l'année (T1, T2, T3, année : rang, moyennes, répartition <8 / 8-12 / ≥12, absences) et avis du jury. Le logo du ministère est fixe (`assets.js`), le logo de l'école est celui de l'établissement connecté.
+- Nouveaux champs : lieu de naissance, nationalité (élèves), série (classes), ville, boîte postale, nom en arabe (établissement).
+- La moyenne annuelle d'une matière est maintenant la moyenne de ses moyennes trimestrielles.
 
 ## Droits
 - **Admin** : tout, y compris l'établissement et les comptes.
