@@ -18,7 +18,7 @@ git push -u origin main
 Settings → Pages → Source : **GitHub Actions**.
 
 ## 3. Super administrateur (propriétaire de la plateforme)
-1. Lancez dans l'ordre : `schema.sql`, `migration_v3.sql`, `migration_v4.sql`, `migration_v5.sql`, `migration_v6.sql`, `migration_v7.sql`, `migration_v8.sql`, `migration_v9.sql` (n'exécutez que ceux qui manquent si votre projet existe déjà).
+1. Lancez dans l'ordre : `schema.sql`, `migration_v3.sql`, `migration_v4.sql`, `migration_v5.sql`, `migration_v6.sql`, `migration_v7.sql`, `migration_v8.sql`, `migration_v9.sql`, `migration_v10.sql` (n'exécutez que ceux qui manquent si votre projet existe déjà).
 2. Authentication → Users → *Add user* (email + mot de passe, *Auto confirm* coché) — utilisez un email dédié.
 3. SQL Editor : `update profiles set role='super', school_id=null where login='VOTRE@EMAIL';`
 4. Connectez-vous : onglet **🏢 Établissements** pour créer une école (nom, responsable, année, email + mot de passe de son administrateur), la suspendre ou la supprimer. Il n'y a **plus d'inscription publique**.
@@ -63,6 +63,12 @@ Settings → Pages → Source : **GitHub Actions**.
 - Nouvelle charte (bleu nuit & or, fond ivoire), menu latéral par **rubriques avec sous-onglets** : Élèves, Vie scolaire, Notes & résultats, Enseignants, Organisation, Configuration.
 - Tableau de bord avec indicateurs et raccourcis, notifications non bloquantes, indicateur de chargement.
 - **Convocations de parents** (suivi du statut + lettre imprimable).
+
+## Nouveautés v10
+- **Saisie des notes** : Niveau → Classe → Matière → Période, grille élèves × devoirs, enregistrement groupé.
+- **Bulletin annuel supprimé** : le bulletin du 3ᵉ trimestre contient le récapitulatif annuel et la décision du conseil de classe.
+- **Orientation** : vœux des élèves, barèmes d'admission par série (S, L, ES, GFM, OGRH, IAG…), décisions du conseil (2nde → 1ère, 1ère → Terminale, avis en Terminale).
+- Les aperçus (bulletins, certificats, cartes, livret, trombinoscope) s'affichent après sélection.
 
 ## Droits
 - **Admin** : tout, y compris l'établissement et les comptes.
