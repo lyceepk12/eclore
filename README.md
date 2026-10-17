@@ -77,6 +77,12 @@ Settings → Pages → Source : **GitHub Actions**.
 - **Saisie des notes** : moyenne de la classe = moyenne des moyennes des élèves.
 - **Enseignant** : arrivée sur un tableau de bord limité à ses classes et matières.
 
+## Performances (v12)
+- Rechargement ciblé : après un enregistrement, seule la table modifiée est relue (au lieu de tout recharger) ; la saisie des notes met à jour la mémoire locale sans aucun rechargement.
+- Connexion : profil et années demandés en parallèle, tables chargées en parallèle, écran de chargement immédiat.
+- Photos des élèves chargées à la demande (trombinoscope, cartes, livret, bulletins) et non plus à chaque chargement.
+- Calculs des moyennes indexés et mémorisés ; module Excel chargé seulement lors d'un import ; polices non bloquantes ; cache « affichage immédiat puis mise à jour ».
+
 ## Droits
 - **Admin** : tout, y compris l'établissement et les comptes.
 - **Administration** : classes, enseignants, élèves, matières, notes, bulletins.
