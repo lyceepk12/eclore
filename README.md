@@ -18,7 +18,7 @@ git push -u origin main
 Settings → Pages → Source : **GitHub Actions**.
 
 ## 3. Super administrateur (propriétaire de la plateforme)
-1. Lancez dans l'ordre : `schema.sql`, `migration_v3.sql`, `migration_v4.sql`, `migration_v5.sql`, `migration_v6.sql`, `migration_v7.sql`, `migration_v8.sql`, `migration_v9.sql`, `migration_v10.sql` (n'exécutez que ceux qui manquent si votre projet existe déjà).
+1. Lancez dans l'ordre : `schema.sql`, `migration_v3.sql`, `migration_v4.sql`, `migration_v5.sql`, `migration_v6.sql`, `migration_v7.sql`, `migration_v8.sql`, `migration_v9.sql`, `migration_v10.sql`, `migration_v11.sql` (n'exécutez que ceux qui manquent si votre projet existe déjà).
 2. Authentication → Users → *Add user* (email + mot de passe, *Auto confirm* coché) — utilisez un email dédié.
 3. SQL Editor : `update profiles set role='super', school_id=null where login='VOTRE@EMAIL';`
 4. Connectez-vous : onglet **🏢 Établissements** pour créer une école (nom, responsable, année, email + mot de passe de son administrateur), la suspendre ou la supprimer. Il n'y a **plus d'inscription publique**.
@@ -69,6 +69,13 @@ Settings → Pages → Source : **GitHub Actions**.
 - **Bulletin annuel supprimé** : le bulletin du 3ᵉ trimestre contient le récapitulatif annuel et la décision du conseil de classe.
 - **Orientation** : vœux des élèves, barèmes d'admission par série (S, L, ES, GFM, OGRH, IAG…), décisions du conseil (2nde → 1ère, 1ère → Terminale, avis en Terminale).
 - Les aperçus (bulletins, certificats, cartes, livret, trombinoscope) s'affichent après sélection.
+
+## Nouveautés v11
+- **Orientation** : barème par plage de moyennes (ex. IAG de 8 à 10), plus de matières clés ; série des classes choisie dans la liste ; décisions automatiques (2nde → 1ère selon vœux/moyenne, 1ère → Terminale même série, avis en Terminale).
+- **Bascule d'année automatique selon l'orientation** (classes et séries de destination créées au besoin).
+- **Couleurs de l'établissement** (principale et accent) dans Configuration › Établissement.
+- **Saisie des notes** : moyenne de la classe = moyenne des moyennes des élèves.
+- **Enseignant** : arrivée sur un tableau de bord limité à ses classes et matières.
 
 ## Droits
 - **Admin** : tout, y compris l'établissement et les comptes.
