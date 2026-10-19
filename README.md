@@ -18,7 +18,7 @@ git push -u origin main
 Settings → Pages → Source : **GitHub Actions**.
 
 ## 3. Super administrateur (propriétaire de la plateforme)
-1. Lancez dans l'ordre : `schema.sql`, `migration_v3.sql`, `migration_v4.sql`, `migration_v5.sql`, `migration_v6.sql`, `migration_v7.sql`, `migration_v8.sql`, `migration_v9.sql`, `migration_v10.sql`, `migration_v11.sql` (n'exécutez que ceux qui manquent si votre projet existe déjà).
+1. Lancez dans l'ordre : `schema.sql`, `migration_v3.sql`, `migration_v4.sql`, `migration_v5.sql`, `migration_v6.sql`, `migration_v7.sql`, `migration_v8.sql`, `migration_v9.sql`, `migration_v10.sql`, `migration_v11.sql`, `migration_v12.sql` (n'exécutez que ceux qui manquent si votre projet existe déjà).
 2. Authentication → Users → *Add user* (email + mot de passe, *Auto confirm* coché) — utilisez un email dédié.
 3. SQL Editor : `update profiles set role='super', school_id=null where login='VOTRE@EMAIL';`
 4. Connectez-vous : onglet **🏢 Établissements** pour créer une école (nom, responsable, année, email + mot de passe de son administrateur), la suspendre ou la supprimer. Il n'y a **plus d'inscription publique**.
@@ -82,6 +82,10 @@ Settings → Pages → Source : **GitHub Actions**.
 - Connexion : profil et années demandés en parallèle, tables chargées en parallèle, écran de chargement immédiat.
 - Photos des élèves chargées à la demande (trombinoscope, cartes, livret, bulletins) et non plus à chaque chargement.
 - Calculs des moyennes indexés et mémorisés ; module Excel chargé seulement lors d'un import ; polices non bloquantes ; cache « affichage immédiat puis mise à jour ».
+
+## Nouveautés v12
+- **Matières par série** (Organisation › Matières par série) : modèle de matières et coefficients par niveau et série, utilisé à la bascule d'année ; les enseignants des matières communes suivent leurs élèves.
+- **Conseil de classe** (Notes & résultats) : toutes les notes d'un niveau ou d'une classe, élèves classés par mérite, appréciations, absences, moyennes et taux de réussite ; impression A4 paysage et export Excel.
 
 ## Droits
 - **Admin** : tout, y compris l'établissement et les comptes.

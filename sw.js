@@ -1,5 +1,5 @@
 // Éclore : cache "stale-while-revalidate" (affichage immédiat, mise à jour en arrière-plan). L'API Supabase n'est jamais mise en cache.
-const C='eclore-v12d',A=['./','index.html','manifest.webmanifest','icon.svg','assets.js'];
+const C='eclore-v13',A=['./','index.html','manifest.webmanifest','icon.svg','assets.js'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(A.map(u=>new Request(u,{cache:'reload'})))).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!=C).map(x=>caches.delete(x)))).then(()=>clients.claim())));
 self.addEventListener('fetch',e=>{const r=e.request,u=new URL(r.url);
